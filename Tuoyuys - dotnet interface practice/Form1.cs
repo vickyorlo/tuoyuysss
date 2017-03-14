@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -11,9 +12,9 @@ using System.Windows.Forms;
 namespace Tuoyuys___dotnet_interface_practice
 {
     public partial class Form1 : Form
-    { 
-        List<IToy> ToyBoxList;
-        List<IToy> ToyTypesList;
+    {
+        BindingList<IToy> ToyBoxList;
+        BindingList<IToy> ToyTypesList;
         IToy selectedToy;
         IToy selectedToyType;
 
@@ -21,13 +22,13 @@ namespace Tuoyuys___dotnet_interface_practice
         {
             InitializeComponent();
 
-            ToyBoxList = new List<IToy>();
+            ToyBoxList = new BindingList<IToy>();
             ToyBoxList.Add(new Car());
             ToyBoxList.Add(new Teddy());
             ToyBoxList.Add(new Chest());
             ToyBoxList.Add(new Wagon());
             toyBox.DataSource = ToyBoxList;
-            ToyTypesList = new List<IToy>();
+            ToyTypesList = new BindingList<IToy>();
             ToyTypesList.Add(new Car());
             ToyTypesList.Add(new Teddy());
             ToyTypesList.Add(new Chest());
@@ -43,7 +44,7 @@ namespace Tuoyuys___dotnet_interface_practice
             volumeUpDown.Enabled = false;
             openableCheckbox.Enabled = false;
             selectedToy = ToyBoxList[toyBox.SelectedIndex];
-            if(selectedToy is IAccelerable)
+            if (selectedToy is IAccelerable)
             {
                 speedUpDown.Value = (selectedToy as IAccelerable).GetSpeed();
                 speedUpDown.Enabled = true;
@@ -102,19 +103,37 @@ namespace Tuoyuys___dotnet_interface_practice
 
         private void createToy_Click(object sender, EventArgs e)
         {
-            if (speedUpDown.Enabled == true)
+            if (speedCreateUpDown.Enabled == true)
             {
                 (selectedToyType as IAccelerable).ChangeSpeed((int)speedCreateUpDown.Value);
             }
-            if (volumeUpDown.Enabled == true)
+            if (volumeCreateUpDown.Enabled == true)
             {
                 (selectedToyType as IFillable).ChangeFillLevel((int)volumeCreateUpDown.Value);
             }
-            if (openableCheckbox.Enabled == true)
+            if (openableCreateCheckbox.Enabled == true)
             {
                 (selectedToyType as IOpenable).Open(openableCreateCheckbox.Checked);
             }
-            ToyBoxList.Add(new IToy(selectedToyType));
+            if (selectedToyType is Car)
+            {
+                ToyBoxList.Add(new Car(selectedToyType as Car));
+
+            }
+            if (selectedToyType is Teddy)
+            {
+                ToyBoxList.Add(new Teddy(selectedToyType as Teddy));
+
+            }
+            if (selectedToyType is Chest)
+            {
+                ToyBoxList.Add(new Chest(selectedToyType as Chest));
+
+            }
+            if (selectedToyType is Wagon)
+            {
+                ToyBoxList.Add(new Wagon(selectedToyType as Wagon));
+            }
             MessageBox.Show("Toy updated successfully!");
         }
     }
