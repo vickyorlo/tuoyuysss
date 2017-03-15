@@ -77,15 +77,15 @@ namespace Tuoyuys___dotnet_interface_practice
 
         private void UpdateToyFromControls(IToy selectedToy, NumericUpDown speedUpDown, NumericUpDown volumeUpDown,CheckBox openableCheckbox)
         {
-            if (speedUpDown.Enabled == true)
+            if (selectedToy is IAccelerable)
             {
                 (selectedToy as IAccelerable).ChangeSpeed((int)speedUpDown.Value);
             }
-            if (volumeUpDown.Enabled == true)
+            if (selectedToy is IFillable)
             {
                 (selectedToy as IFillable).ChangeFillLevel((int)volumeUpDown.Value);
             }
-            if (openableCheckbox.Enabled == true)
+            if (selectedToy is IOpenable)
             {
                 (selectedToy as IOpenable).Open(openableCheckbox.Checked);
             }
