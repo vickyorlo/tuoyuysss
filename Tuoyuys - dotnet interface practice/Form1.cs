@@ -15,8 +15,6 @@ namespace Tuoyuys___dotnet_interface_practice
     {
         BindingList<IToy> ToyBoxList;
         BindingList<IToy> ToyTypesList;
-        IToy selectedToy;
-        IToy selectedToyType;
 
         public Form1()
         {
@@ -34,87 +32,27 @@ namespace Tuoyuys___dotnet_interface_practice
             ToyTypesList.Add(new Chest());
             ToyTypesList.Add(new Wagon());
             createToyCombo.DataSource = ToyTypesList;
-
-
         }
 
         private void toyBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            speedUpDown.Enabled = false;
-            volumeUpDown.Enabled = false;
-            openableCheckbox.Enabled = false;
-            selectedToy = ToyBoxList[toyBox.SelectedIndex];
-            if (selectedToy is IAccelerable)
-            {
-                speedUpDown.Value = (selectedToy as IAccelerable).GetSpeed();
-                speedUpDown.Enabled = true;
-            }
-            if (selectedToy is IFillable)
-            {
-                volumeUpDown.Value = (selectedToy as IFillable).GetFillLevel();
-                volumeUpDown.Enabled = true;
-            }
-            if (selectedToy is IOpenable)
-            {
-                openableCheckbox.Checked = (selectedToy as IOpenable).GetOpen();
-                openableCheckbox.Enabled = true;
-            }
-        }
-
-        private void commitChangesButton_Click(object sender, EventArgs e)
-        {
-            if(speedUpDown.Enabled == true)
-            {
-                (selectedToy as IAccelerable).ChangeSpeed((int)speedUpDown.Value);
-            }
-            if (volumeUpDown.Enabled == true)
-            {
-                (selectedToy as IFillable).ChangeFillLevel((int)volumeUpDown.Value);
-            }
-            if (openableCheckbox.Enabled == true)
-            {
-                (selectedToy as IOpenable).Open(openableCheckbox.Checked);
-            }
-            MessageBox.Show("Toy updated successfully!");
+        { 
+            UpdateControlsFromToy(ToyBoxList[toyBox.SelectedIndex], speedUpDown,volumeUpDown,openableCheckbox);
         }
 
         private void createToyCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            speedCreateUpDown.Enabled = false;
-            volumeCreateUpDown.Enabled = false;
-            openableCreateCheckbox.Enabled = false;
-            selectedToyType = ToyTypesList[createToyCombo.SelectedIndex];
-            if (selectedToyType is IAccelerable)
-            {
-                speedCreateUpDown.Value = (selectedToyType as IAccelerable).GetSpeed();
-                speedCreateUpDown.Enabled = true;
-            }
-            if (selectedToyType is IFillable)
-            {
-                volumeCreateUpDown.Value = (selectedToyType as IFillable).GetFillLevel();
-                volumeCreateUpDown.Enabled = true;
-            }
-            if (selectedToyType is IOpenable)
-            {
-                openableCreateCheckbox.Checked = (selectedToyType as IOpenable).GetOpen();
-                openableCreateCheckbox.Enabled = true;
-            }
+            UpdateControlsFromToy(ToyTypesList[createToyCombo.SelectedIndex], speedCreateUpDown, volumeCreateUpDown, openableCreateCheckbox);
         }
 
+        private void commitChangesButton_Click(object sender, EventArgs e)
+        {
+            UpdateToyFromControls(ToyBoxList[toyBox.SelectedIndex], speedUpDown,volumeUpDown,openableCheckbox);
+            MessageBox.Show("Toy updated successfully!");
+        }
         private void createToy_Click(object sender, EventArgs e)
         {
-            if (speedCreateUpDown.Enabled == true)
-            {
-                (selectedToyType as IAccelerable).ChangeSpeed((int)speedCreateUpDown.Value);
-            }
-            if (volumeCreateUpDown.Enabled == true)
-            {
-                (selectedToyType as IFillable).ChangeFillLevel((int)volumeCreateUpDown.Value);
-            }
-            if (openableCreateCheckbox.Enabled == true)
-            {
-                (selectedToyType as IOpenable).Open(openableCreateCheckbox.Checked);
-            }
+            IToy selectedToyType = ToyTypesList[createToyCombo.SelectedIndex];
+            UpdateToyFromControls(selectedToyType, speedCreateUpDown, volumeCreateUpDown, openableCreateCheckbox);
             if (selectedToyType is Car)
             {
                 ToyBoxList.Add(new Car(selectedToyType as Car));
@@ -134,7 +72,48 @@ namespace Tuoyuys___dotnet_interface_practice
             {
                 ToyBoxList.Add(new Wagon(selectedToyType as Wagon));
             }
-            MessageBox.Show("Toy updated successfully!");
+            MessageBox.Show("Toy created successfully!");
+        }
+
+        private void UpdateToyFromControls(IToy selectedToy, NumericUpDown speedUpDown, NumericUpDown volumeUpDown,CheckBox openableCheckbox)
+        {
+            if (speedUpDown.Enabled == true)
+            {
+                (selectedToy as IAccelerable).ChangeSpeed((int)speedUpDown.Value);
+            }
+            if (volumeUpDown.Enabled == true)
+            {
+                (selectedToy as IFillable).ChangeFillLevel((int)volumeUpDown.Value);
+            }
+            if (openableCheckbox.Enabled == true)
+            {
+                (selectedToy as IOpenable).Open(openableCheckbox.Checked);
+            }
+        }
+
+        private void UpdateControlsFromToy(IToy selectedToy, NumericUpDown speedUpDown, NumericUpDown volumeUpDown, CheckBox openableCheckbox)
+        {
+            speedUpDown.Value = 0;
+            volumeUpDown.Value = 0;
+            openableCheckbox.Checked = false; //reset controls
+            speedUpDown.Enabled = false;
+            volumeUpDown.Enabled = false;
+            openableCheckbox.Enabled = false;
+            if (selectedToy is IAccelerable)
+            {
+                speedUpDown.Value = (selectedToy as IAccelerable).GetSpeed();
+                speedUpDown.Enabled = true;
+            }
+            if (selectedToy is IFillable)
+            {
+                volumeUpDown.Value = (selectedToy as IFillable).GetFillLevel();
+                volumeUpDown.Enabled = true;
+            }
+            if (selectedToy is IOpenable)
+            {
+                openableCheckbox.Checked = (selectedToy as IOpenable).GetOpen();
+                openableCheckbox.Enabled = true;
+            }
         }
     }
 }
